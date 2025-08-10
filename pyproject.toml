@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "lif"
+version = "0.1.0"
+description = "A Liquid State Machine (LSM) using Leaky Integrate-and-Fire (LIF) neurons."
+authors = ["Chris <goabonga@pm.me>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.13"
+torch = { version = ">=2.7.1,<3.0.0", source = "torch-cpu" }
+matplotlib = ">=3.10.3,<4.0.0"
+
+[[tool.poetry.source]]
+name = "torch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "explicit"
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

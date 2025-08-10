@@ -1,0 +1,39 @@
+% Paramètres
+N_input = 1;
+N_res = 100;
+N_out = 1;
+steps = 500;
+
+params.tau_m = 10;
+params.dt = 1;
+params.V_th = 1.0;
+params.V_reset = 0.0;
+params.t_ref = 5;
+
+% Poids aléatoires (réservoir non appris)
+W_in = randn(N_res, N_input) * 0.5;
+W_res = randn(N_res, N_res) * 0.05;
+
+% Signal d'entrée périodique
+t = (1:steps);
+input_signal = double(mod(t, 50) < 2);  % impulsion courte périodique
+input_signal = reshape(input_signal, [1, steps]);  % [N_input x T]
+
+% Target = fonction sinusoïdale
+target_output = sin(2 * pi * t / 100);
+
+% Simulation de la LSM
+[spike_train, ~] = lif_lsm(input_signal, W_in, W_res, zeros(N_out, N_res), params);
+
+% Entraînement du readout
+lambda = 1e-3;
+W_out = train_readout(spike_train, target_output, lambda);
+
+% Réexécution avec W_out appris
+[~, output] = lif_lsm(input_signal, W_in, W_res, W_out, params);
+
+% Visualisation
+plot(t, target_output, 'k--', t, output, 'b');
+legend('Target', 'LSM output');
+title('Entraînement LSM : approximation sinusoïdale');
+xlabel('Temps'); ylabel('Valeur');
